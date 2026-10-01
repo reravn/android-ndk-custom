@@ -26,5 +26,4 @@ jobs:
       version: ${{ inputs.version }}
       revision: ${{ inputs.revision }}
       targets: >-
-        ["aarch64-w64-mingw32", "i686-w64-mingw32", "x86_64-w64-mingw32",
-         "armv7-w64-mingw32", "arm64ec-w64-mingw32"]
+        ["i686-w64-mingw32", "x86_64-w64-mingw32"]
