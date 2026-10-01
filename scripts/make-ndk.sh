@@ -802,7 +802,7 @@ assemble_ndk() {
 assemble_unix() {
   local PREBUILT_BIN="$NDK/prebuilt/linux-x86_64/bin"
 
-  strip_debugger
+  # strip_debugger
 
   # replace ELF tools with the rebuilt ones; convert bash shebangs; drop the rest
   find "$NDK_TOOLCHAIN/bin" -type f | while IFS= read -r file; do
@@ -812,7 +812,8 @@ assemble_unix() {
     elif file "$file" | grep -q 'Bourne-Again shell script'; then
       echo "Replacing SheBang $bname"; sed -i 's,#!/usr/bin/env bash,#!/usr/bin/env sh,' "$file"
     elif ! file "$file" | grep -Eq 'Python script|Perl script|ASCII text'; then
-      echo "Removing $bname"; rm "$file"
+      # echo "Removing $bname"; rm "$file"
+      echo "no-op"
     fi
   done
 
@@ -829,8 +830,8 @@ assemble_unix() {
   rm -rf "$NDK_TOOLCHAIN/python3"
   rm -rf "$NDK_TOOLCHAIN/musl"
   rm -rf "$NDK/simpleperf"                 # can't build simpleperf as it requires AOSP sources
-  find "$NDK_TOOLCHAIN/lib" -maxdepth 1 -mindepth 1 -not -name clang -exec rm -rf {} \;
-  find "$NDK_TOOLCHAIN" -maxdepth 5 -path "*/lib/clang/[0-9][0-9]/lib/*" -not -name linux -exec rm -rf {} \;
+  # find "$NDK_TOOLCHAIN/lib" -maxdepth 1 -mindepth 1 -not -name clang -exec rm -rf {} \;
+  # find "$NDK_TOOLCHAIN" -maxdepth 5 -path "*/lib/clang/[0-9][0-9]/lib/*" -not -name linux -exec rm -rf {} \;
 
   # copy compiled binaries
   cp -R "$HOST_TOOLCHAIN/lib/clang" "$NDK_TOOLCHAIN/lib"
@@ -1131,7 +1132,7 @@ endif()' "${files[@]}"
 assemble_windows() {
   local PREBUILT_BIN="$NDK/prebuilt/windows-x86_64/bin"
 
-  strip_debugger
+  # strip_debugger
 
   # llvm-custom ships some bin/ entries as symlinks; hard-link them so the copy
   # below picks up real PE files
@@ -1147,7 +1148,8 @@ assemble_windows() {
     if [ -f "$HOST_TOOLCHAIN/bin/$bname" ] && file "$file" | grep -q 'PE32'; then
       echo "Replacing $bname"; cp "$HOST_TOOLCHAIN/bin/$bname" "$file"
     elif ! file "$file" | grep -Eq 'Python script|Perl script|ASCII text'; then
-      echo "Removing $bname"; rm "$file"
+      # echo "Removing $bname"; rm "$file"
+      echo "no-op"
     fi
   done
 
@@ -1158,8 +1160,8 @@ HOST_ARCH=x86_64' "$NDK/build/tools/ndk_bin_common.sh"
   # remove unused resources
   rm -rf "$NDK_TOOLCHAIN/python3"
   rm -rf "$NDK/simpleperf"                 # can't build simpleperf as it requires AOSP sources
-  find "$NDK_TOOLCHAIN/lib" -maxdepth 1 -mindepth 1 -not -name clang -exec rm -rf {} \;
-  find "$NDK_TOOLCHAIN" -maxdepth 5 -path "*/lib/clang/[0-9][0-9]/lib/*" -not -name linux -exec rm -rf {} \;
+  # find "$NDK_TOOLCHAIN/lib" -maxdepth 1 -mindepth 1 -not -name clang -exec rm -rf {} \;
+  # find "$NDK_TOOLCHAIN" -maxdepth 5 -path "*/lib/clang/[0-9][0-9]/lib/*" -not -name linux -exec rm -rf {} \;
 
   # copy compiled binaries
   cp -R "$HOST_TOOLCHAIN/lib/clang" "$NDK_TOOLCHAIN/lib"
